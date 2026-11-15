@@ -159,7 +159,7 @@ mark{background:var(--mark);-webkit-background-clip:text;background-clip:text;co
 .pts li{position:relative;padding-left:1.15rem;margin-top:.6rem;color:var(--ink-2)}
 .pts li::before{content:"";position:absolute;left:0;top:.62em;width:.35rem;height:.35rem;border-radius:50%;background:var(--ink-3)}
 .more{margin-top:1.25rem}
-.media{margin-top:1.5rem}
+.media,.shot{margin-top:1.5rem}   /* .shot: a photo placed under a card's text */
 @media (min-width:60rem){
   .card.side{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:2.5rem;align-items:start}
   .card.side .media{margin-top:0}
