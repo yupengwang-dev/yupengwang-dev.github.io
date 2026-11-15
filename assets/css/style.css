@@ -1,0 +1,259 @@
+/* Yu-Peng Wang — site styles
+   Light glass over liquid metal: a silver surface flows slowly behind the page (drawn by site.js), the cards are frosted
+   glass with the edge highlights of the beyon design system, and the text is graphite with a single deep-blue accent.
+   Type is the system interface face (San Francisco on Apple devices, Segoe UI on Windows). */
+
+:root{
+  --ink:#121418;               /* text */
+  --ink-2:#2E333A;             /* secondary text */
+  --ink-3:#3F454E;             /* dates and labels */
+  --line:rgba(18,20,24,.12);   /* hairlines */
+  --accent:#1F4E80;            /* links and award labels */
+  --btn:#3D5566;               /* solid marks: the brand dot, focus rings, selected text */
+  --on-btn:#FFFFFF;
+  --name:linear-gradient(180deg,#1A1D22 0%,#4C535C 60%,#2A2E35 100%);   /* large headings */
+  --mark:linear-gradient(90deg,#1F4E80,#5D6B7B);                        /* highlighted results */
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
+  --gutter:clamp(1.25rem,5vw,3rem);
+  --r:1.5rem;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --spring:cubic-bezier(.34,1.56,.64,1);   /* a small overshoot, for things springing back after a press */
+  /* glass edges, after the beyon design system: bright rims top-left and along the bottom, soft inner shading, a drop shadow */
+  --glass-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.10),
+    inset 1.8px 3px 0 -2px rgba(255,255,255,.90),
+    inset -2px -2px 0 -2px rgba(255,255,255,.80),
+    inset -3px -8px 1px -6px rgba(255,255,255,.60),
+    inset -0.3px -1px 4px 0 rgba(0,0,0,.12),
+    inset -1.5px 2.5px 0 -2px rgba(0,0,0,.20),
+    inset 0 3px 4px -2px rgba(0,0,0,.20),
+    inset 2px -6.5px 1px -4px rgba(0,0,0,.10),
+    0 1px 5px 0 rgba(0,0,0,.10),
+    0 6px 16px 0 rgba(0,0,0,.08);
+  /* the same edges pressed in: the top rim falls into shadow and the drop shadow tightens.
+     Same ten layers in the same order, so the browser can blend between the two */
+  --glass-pressed:
+    inset 0 0 0 1px rgba(255,255,255,.06),
+    inset 1.8px 3px 0 -2px rgba(255,255,255,.30),
+    inset -2px -2px 0 -2px rgba(255,255,255,.55),
+    inset -3px -8px 1px -6px rgba(255,255,255,.50),
+    inset 0 1px 6px 0 rgba(0,0,0,.16),
+    inset -1.5px 2.5px 0 -2px rgba(0,0,0,.26),
+    inset 0 4px 6px -2px rgba(0,0,0,.24),
+    inset 2px -6.5px 1px -4px rgba(0,0,0,.06),
+    0 0 2px 0 rgba(0,0,0,.08),
+    0 1px 3px 0 rgba(0,0,0,.05);
+  /* a button under the pointer: the glass edges and a soft white glow */
+  --glass-lit:var(--glass-shadow),0 0 1.5rem .1rem rgba(255,255,255,.65);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:#C9CDD3;scroll-behavior:smooth;-webkit-text-size-adjust:100%}   /* the metal's base tone, seen until the background is drawn */
+body{margin:0;min-height:100vh;color:var(--ink);font:400 1.0625rem/1.55 var(--font);letter-spacing:-.011em;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+img{display:block;max-width:100%;height:auto}
+h1,h2,h3,p,ul,dl,dd,figure{margin:0}
+ul{padding:0;list-style:none}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:.2em;text-decoration-thickness:1px}
+:focus-visible{outline:2px solid var(--btn);outline-offset:3px;border-radius:.4rem}
+::selection{background:var(--btn);color:var(--on-btn)}
+mark{background:var(--mark);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:600}
+.wrap{max-width:68rem;margin:0 auto;padding:0 var(--gutter)}
+
+/* ---------- background and glass ---------- */
+#metal-bg{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;display:block}
+/* the background is smooth, so a white tint and the glass edges read as glass without a live blur,
+   and nothing has to be re-blurred on every frame of the moving background */
+.profile,.tile,.card,.foot .glass,.feature figcaption{
+  background:linear-gradient(180deg,rgba(255,255,255,.62) 0%,rgba(255,255,255,.44) 45%,rgba(255,255,255,.52) 100%);
+  box-shadow:var(--glass-shadow)}
+/* a soft light under the text follows the pointer across the cards (site.js sets --gx and --gy) */
+.profile,.tile,.card{position:relative;isolation:isolate}
+.profile::after,.tile::after,.card::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .45s;
+  background:radial-gradient(20rem circle at var(--gx,50%) var(--gy,0%),rgba(255,255,255,.7),rgba(255,255,255,0) 60%)}
+.lit::after{opacity:1}
+/* the profile card and the home-page cards tilt towards the pointer (site.js sets --tilt) */
+.hero,.tiles{perspective:1100px}
+.tilt{rotate:var(--tilt,1 0 0 0deg)}
+.tilt-out{transition:rotate .4s var(--ease)}
+
+/* ---------- header, buttons and page tabs ---------- */
+/* the home page has no Email button in its header (the one under the name is enough), so the header keeps one
+   height on every page and the name does not jump when moving between pages */
+.head{display:flex;align-items:center;justify-content:space-between;gap:1rem;max-width:68rem;min-height:4.45rem;margin:0 auto;padding:1.1rem var(--gutter)}
+.brand{display:inline-flex;align-items:center;gap:.5rem;color:var(--ink);font-weight:600;letter-spacing:-.02em}
+.brand:hover{text-decoration:none}
+.brand i{width:.5rem;height:.5rem;border-radius:50%;background:var(--btn)}
+/* buttons: all the same clear glass at rest; a button lights up only while the pointer is on it,
+   and sinks into the glass while it is pressed */
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:.72rem 1.4rem;border-radius:99rem;font-size:1.0625rem;font-weight:500;letter-spacing:-.01em;
+  color:var(--ink);background:rgba(255,255,255,.3);box-shadow:var(--glass-shadow)}
+.btn.small{padding:.4rem 1rem;font-size:.9375rem}
+.btn,dialog button{-webkit-tap-highlight-color:transparent;
+  transition:background-color .35s var(--ease),color .25s,box-shadow .45s var(--ease),scale .5s var(--spring),translate .5s var(--spring)}
+.btn:hover,dialog button:hover{text-decoration:none;background:rgba(255,255,255,.88);box-shadow:var(--glass-lit)}
+.btn:active,dialog button:active{scale:.95;translate:0 1px;background:rgba(236,240,243,.66);box-shadow:var(--glass-pressed);
+  transition-duration:.1s,.1s,.08s,.08s,.08s;transition-timing-function:ease-out}
+/* the floating tab bar passes over text and photos, so unlike the cards it keeps a real blur */
+.tabs{position:fixed;z-index:30;left:50%;bottom:calc(.9rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:flex;gap:.1rem;padding:.28rem;border-radius:99rem;white-space:nowrap;
+  background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(8px) saturate(150%);backdrop-filter:blur(8px) saturate(150%);box-shadow:var(--glass-shadow)}
+.tabs a{padding:.46rem .95rem;border-radius:99rem;color:var(--ink-2);font-size:.9375rem;-webkit-tap-highlight-color:transparent;
+  transition:color .25s,background-color .25s,box-shadow .25s,scale .45s var(--spring)}
+.tabs a:hover{color:var(--ink);text-decoration:none}
+.tabs a[aria-current="page"]{color:var(--ink);background:rgba(255,255,255,.85);box-shadow:inset 0 1px 0 #FFFFFF,0 1px 2px rgba(0,0,0,.1);font-weight:500}
+.tabs a:active{scale:.92;background-color:rgba(18,20,24,.06);box-shadow:inset 0 1px 3px rgba(0,0,0,.14);
+  transition-duration:.1s,.08s,.08s,.08s;transition-timing-function:ease-out}
+.tabs a[aria-current="page"]:active{background-color:rgba(232,236,240,.95);box-shadow:inset 0 1px 3px rgba(0,0,0,.16),0 0 0 rgba(0,0,0,0)}
+@media (min-width:48rem){.tabs{bottom:auto;top:.8rem}}
+
+/* ---------- home ---------- */
+.hero{display:grid;gap:2.5rem;align-items:end;padding:clamp(2.5rem,8vw,6rem) 0 clamp(2rem,5vw,3.5rem)}
+@media (min-width:60rem){.hero{grid-template-columns:minmax(0,1.4fr) minmax(20rem,.8fr);gap:3.5rem}}
+.name{font-family:var(--display);font-weight:600;font-size:clamp(3.4rem,11vw,7rem);line-height:1;letter-spacing:-.045em}
+.title{font-family:var(--display);font-weight:600;font-size:clamp(3rem,9vw,5.5rem);line-height:1;letter-spacing:-.045em}
+.name .w,.title .w{display:inline-block;background:var(--name);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.14em;margin-bottom:-.14em}
+.lede{font-size:clamp(1.2rem,2.1vw,1.5rem);line-height:1.4;letter-spacing:-.018em;color:#22262C;max-width:34em;margin-top:1.5rem}
+.reach{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2rem}
+.profile{border-radius:var(--r);padding:1.5rem}
+.who{display:flex;align-items:center;gap:1rem;padding-bottom:1.25rem}
+.face{width:4.5rem;height:4.5rem;border-radius:1.1rem;object-fit:cover;object-position:50% 18%;flex:none}
+.who strong{display:block;font-weight:600;font-size:1.1875rem;letter-spacing:-.02em;line-height:1.2}
+.who span{display:inline-flex;align-items:center;gap:.3rem;color:var(--ink-2);font-size:.9375rem;margin-top:.2rem}
+.who svg{width:.95em;height:.95em;flex:none}
+.row{padding:1rem 0;border-top:1px solid var(--line)}
+.row b{display:block;font-weight:600;letter-spacing:-.015em;line-height:1.3}
+.row small{display:block;color:var(--ink-2);font-size:.9375rem;line-height:1.4;margin-top:.15rem}
+.gpa{display:flex;gap:1.5rem}
+.gpa div{flex:1}
+.gpa b{font-size:2.25rem;font-weight:600;letter-spacing:-.035em;line-height:1.05;font-variant-numeric:tabular-nums}
+.gpa b span{font-size:1rem;font-weight:400;letter-spacing:0;color:var(--ink-3)}
+.feature{margin-top:1rem}
+.feature figcaption{display:flex;flex-wrap:wrap;align-items:baseline;gap:.35rem 1rem;margin-top:.75rem;padding:.9rem 1.15rem;border-radius:1.1rem;color:var(--ink-2);font-size:.9375rem}
+.feature figcaption strong{color:var(--ink);font-weight:600}
+.pill{display:inline-block;font-size:.875rem;font-weight:500;color:var(--ink-3);white-space:nowrap}
+.pill.accent{color:var(--accent);font-weight:600;white-space:normal}
+.tiles{display:grid;gap:1rem;margin-top:1.25rem}
+@media (min-width:52rem){.tiles{grid-template-columns:repeat(3,1fr)}}
+.tile{display:flex;flex-direction:column;padding:1.75rem;border-radius:var(--r);color:var(--ink);-webkit-tap-highlight-color:transparent}
+.tile:hover{text-decoration:none;color:var(--ink)}
+.tile h2{display:flex;justify-content:space-between;align-items:center;font-size:1.75rem;font-weight:600;letter-spacing:-.03em;line-height:1.1}
+.tile h2 svg{width:2rem;height:2rem;padding:.45rem;border-radius:50%;border:1px solid var(--line);transition:background .3s,color .3s,border-color .3s,transform .5s var(--ease)}
+.tile:hover h2 svg{background:var(--btn);border-color:var(--btn);color:var(--on-btn);transform:rotate(-45deg)}
+.tile ul{margin-top:1.1rem;flex:1}
+.tile li{padding:.6rem 0;border-top:1px solid var(--line);color:var(--ink-2);font-size:.9375rem;line-height:1.35}
+.tile .go{margin-top:1.25rem;color:var(--accent);font-size:.9375rem}
+.tile .go::after,.more a::after{content:" \203A"}
+
+/* ---------- inner pages ---------- */
+.pagehead{padding:clamp(2.5rem,8vw,5.5rem) 0 clamp(1.75rem,4vw,2.75rem)}
+.stack{display:grid;gap:1rem}
+.card{padding:clamp(1.5rem,3.5vw,2.5rem);border-radius:var(--r)}
+.card header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.35rem 1rem}
+.card h2{flex:1 1 14em;font-size:clamp(1.4rem,2.4vw,1.75rem);font-weight:600;line-height:1.18;letter-spacing:-.025em}
+.meta{color:var(--ink-2);font-size:.9375rem;line-height:1.45;margin-top:.6rem}
+.award{margin-top:.75rem}
+.award .pill.accent::before{content:"";display:inline-block;width:.45em;height:.45em;border-radius:50%;background:currentColor;margin-right:.5em;vertical-align:.12em}
+.sum{margin-top:1rem;font-size:1.1875rem;line-height:1.45;letter-spacing:-.02em}
+.pts{margin-top:1rem}
+.pts li{position:relative;padding-left:1.15rem;margin-top:.6rem;color:var(--ink-2)}
+.pts li::before{content:"";position:absolute;left:0;top:.62em;width:.35rem;height:.35rem;border-radius:50%;background:var(--ink-3)}
+.more{margin-top:1.25rem}
+.media{margin-top:1.5rem}
+@media (min-width:60rem){
+  .card.side{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:2.5rem;align-items:start}
+  .card.side .media{margin-top:0}
+}
+.figs{display:grid;gap:.6rem}
+.figs.c2{grid-template-columns:repeat(2,1fr)}
+.figs.c3{grid-template-columns:repeat(3,1fr)}
+.zoom{all:unset;display:block;cursor:zoom-in;overflow:hidden;border-radius:1rem;background:rgba(255,255,255,.3);-webkit-tap-highlight-color:transparent;transition:scale .5s var(--spring)}
+.feature .zoom{border-radius:var(--r)}
+.feature img{width:100%;aspect-ratio:1200/672;object-fit:cover}
+.zoom:focus-visible{outline:2px solid var(--btn);outline-offset:3px}
+.zoom:active{scale:.985;transition-duration:.08s;transition-timing-function:ease-out}
+.zoom img{width:100%;transition:transform .8s var(--ease)}
+.zoom:hover img{transform:scale(1.03)}
+.figs.c2 .zoom img,.figs.c3 .zoom img{aspect-ratio:3/4;object-fit:cover}
+.figs.land .zoom img{aspect-ratio:4/3}
+.figs.tall .zoom img{aspect-ratio:460/1000}
+.cap{color:var(--ink-3);font-size:.875rem;line-height:1.45;margin-top:.7rem}
+
+/* about */
+.about{display:grid;gap:1rem}
+@media (min-width:60rem){.about{grid-template-columns:1fr 1fr;align-items:start}.about .wide{grid-column:1/-1}}
+.card h2.h{flex:none;font-size:1.75rem;letter-spacing:-.03em;margin-bottom:.75rem}
+.honors li{display:grid;grid-template-columns:3.5rem 1fr;gap:.15rem 1rem;padding:1rem 0;border-top:1px solid var(--line)}
+.honors li:last-child,.skills div:last-child,.lead li:last-child{padding-bottom:0}
+.honors .pill{padding-top:.1rem}
+.honors b{font-weight:600;line-height:1.35;letter-spacing:-.015em}
+.honors small{display:block;color:var(--ink-2);font-size:.9375rem;line-height:1.4;margin-top:.15rem}
+.skills div{display:grid;gap:.3rem;padding:1rem 0;border-top:1px solid var(--line)}
+@media (min-width:48rem){.skills div{grid-template-columns:17rem 1fr;gap:1.5rem}}
+.skills dt{font-weight:600;letter-spacing:-.015em}
+.skills dd .pill{display:inline;font-size:1rem;font-weight:400;color:var(--ink-2);white-space:normal}
+.skills dd .pill + .pill::before{content:"\00B7";margin:0 .55em;color:var(--ink-3)}
+.lead li{padding:1rem 0;border-top:1px solid var(--line)}
+.lead header{align-items:baseline}
+.lead h3{flex:1 1 12em;font-size:1.125rem;font-weight:600;letter-spacing:-.02em;line-height:1.3}
+.lead p{color:var(--ink-2);margin-top:.45rem}
+
+/* ---------- footer ---------- */
+.foot{margin-top:clamp(3rem,7vw,5rem);padding:0 var(--gutter) calc(5.5rem + env(safe-area-inset-bottom,0px))}
+.foot .glass{max-width:calc(68rem - 2 * var(--gutter));margin:0 auto;padding:1.1rem 1.4rem;border-radius:var(--r);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.6rem 2rem;font-size:.875rem}
+.foot .links{display:flex;flex-wrap:wrap;gap:.3rem 1.5rem}
+.foot .links a{color:var(--ink-2)}
+.foot .links a:hover{color:var(--ink)}
+.foot p{color:var(--ink-3)}
+@media (min-width:48rem){.foot{padding-bottom:2.5rem}}
+
+/* ---------- enlarged image ---------- */
+dialog{border:0;padding:0;background:transparent;color:var(--ink);max-width:min(94vw,68rem);max-height:94vh}
+dialog::backdrop{background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+dialog[open]{animation:pop .45s var(--ease)}
+dialog img{max-width:100%;max-height:82vh;margin:0 auto;border-radius:1rem}
+dialog form{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-top:.75rem}
+dialog p{font-size:.9375rem;color:var(--ink-2)}
+dialog button{font:500 1rem var(--font);color:var(--ink);background:rgba(255,255,255,.3);border:0;padding:.55rem 1.2rem;border-radius:99rem;cursor:pointer;box-shadow:var(--glass-shadow)}
+
+/* ---------- motion ---------- */
+@keyframes soft{from{opacity:0;transform:translateY(.3em);filter:blur(12px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes settle{from{opacity:0;transform:translateY(28px) scale(.975)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes drop{from{opacity:0;transform:translate(-50%,-.8rem)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes lift{from{opacity:0;transform:translate(-50%,.8rem)}to{opacity:1;transform:translate(-50%,0)}}
+
+/* opening: the heading comes into focus, then the rest settles in */
+.name .w,.title .w{animation:soft 1.1s var(--ease) both}
+.name .w + .w,.title .w + .w{animation-delay:.12s}
+.lede{animation:up .9s .3s var(--ease) both}
+.reach{animation:up .9s .45s var(--ease) both}
+.profile{animation:settle 1.1s .45s var(--ease) both}
+.head{animation:fade .8s both}
+.tabs{animation:lift .9s .2s var(--ease) both}
+@media (min-width:48rem){.tabs{animation-name:drop}}
+
+/* on scroll: cards rise into place */
+.js .rv{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease),box-shadow .5s var(--ease)}
+.js .rv.in{opacity:1;transform:none}
+/* home-page cards: they rise under the pointer, sink when pressed, and lean back smoothly when the pointer leaves
+   (".js .rv" outranks ".tilt-out", so the ease-back of the tilt is listed here as well) */
+.js .rv.tile{transition:opacity .9s var(--ease),transform .9s var(--ease),box-shadow .5s var(--ease),scale .5s var(--spring),translate .5s var(--spring)}
+.js .rv.tile.tilt-out{transition:opacity .9s var(--ease),transform .9s var(--ease),box-shadow .5s var(--ease),scale .5s var(--spring),translate .5s var(--spring),rotate .4s var(--ease)}
+.js .rv.tile.in:hover{transform:translateY(-4px);box-shadow:var(--glass-shadow),0 1.25rem 2.5rem -1.5rem rgba(18,20,24,.3)}
+.js .rv.tile.in:active{scale:.975;translate:0 3px;box-shadow:var(--glass-pressed),0 .6rem 1.2rem -1rem rgba(18,20,24,.22);
+  transition-duration:.9s,.9s,.1s,.1s,.1s;transition-timing-function:ease-out}
+
+/* pages cross-fade into each other where the browser supports it */
+@view-transition{navigation:auto}
+.tabs{view-transition-name:tabs}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.4s}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .js .rv{opacity:1;transform:none}
+  .btn:active,dialog button:active,.tabs a:active,.zoom:active,.js .rv.tile.in:active{scale:none;translate:none}   /* pressed things darken but do not move */
+}
+@media print{.tabs,#metal-bg{display:none}}
