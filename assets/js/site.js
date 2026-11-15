@@ -85,6 +85,7 @@ document.addEventListener('touchstart', function () {}, { passive: true });
   // iri = rainbow sheen on the slopes, spotI and spotR = brightness and size of the light that follows the pointer
   var P = { relief: 0.2, speed: 0.12, scale: 0.59, bright: 0.1, fx: 0.4, iri: 0.2, spotI: 0.45, spotR: 0.4 };
   var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // colours: near-neutral silver; blue is only a hair stronger than red, which keeps the metal from looking flat grey
   var m = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5, s: 0, ts: 0, seen: -1e9 };
   var FS = [
     '#ifdef GL_FRAGMENT_PRECISION_HIGH',
@@ -122,7 +123,7 @@ document.addEventListener('touchstart', function () {}, { passive: true });
     '  return h;',
     '}',
     'vec3 studio(vec3 r){',
-    '  vec3 col = mix(vec3(0.52, 0.55, 0.60), vec3(0.84, 0.86, 0.90), smoothstep(-0.8, 0.8, r.y));',
+    '  vec3 col = mix(vec3(0.535, 0.545, 0.56), vec3(0.855, 0.862, 0.875), smoothstep(-0.8, 0.8, r.y));',
     '  col += vec3(0.12) * smoothstep(0.25, 0.5, r.y) * (1.0 - smoothstep(0.6, 0.85, r.y));',
     '  col += vec3(0.06) * smoothstep(-0.35, -0.1, r.x) * (1.0 - smoothstep(0.05, 0.3, r.x));',
     '  return col;',
@@ -139,11 +140,11 @@ document.addEventListener('touchstart', function () {}, { passive: true });
     '  vec3 L = normalize(vec3(lp - uv, mix(0.55, 0.55 * uSpotR, uMouse.z)));',
     '  col += vec3(mix(0.24, 0.24 * uSpotI, uMouse.z)) * pow(max(dot(n, normalize(L + vec3(0.0, 0.0, 1.0))), 0.0), 60.0);',
     '  vec2 dl = (uv - uMouse.xy) / max(uSpotR, 0.05);',
-    '  col += vec3(0.10, 0.11, 0.13) * uSpotI * uFx * uMouse.z * exp(-dot(dl, dl) * 9.0);',
+    '  col += vec3(0.11, 0.112, 0.118) * uSpotI * uFx * uMouse.z * exp(-dot(dl, dl) * 9.0);',
     '  vec3 film = 0.5 + 0.5 * cos(6.2831853 * (vec3(0.0, 0.33, 0.67) + h * 2.0 + n.x * 0.6 + n.y * 0.4));',
     '  col = mix(col, col * (0.72 + 0.56 * film), uIri * clamp((1.0 - n.z) * 7.0, 0.0, 1.0) * 0.7);',
     '  col *= mix(0.9, 1.0, n.z);',
-    '  col *= vec3(0.99, 0.997, 1.015);',
+    '  col *= vec3(1.0, 1.0, 1.004);',
     '  col += (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233)) + uTime) * 43758.5453) - 0.5) / 255.0;',
     '  gl_FragColor = vec4(col, 1.0);',
     '}'
