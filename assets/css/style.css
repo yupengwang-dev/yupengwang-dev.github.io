@@ -15,6 +15,11 @@
   --mark:linear-gradient(90deg,#1F4E80,#5D6B7B);                        /* highlighted results */
   --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
   --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
+  /* type scale: every piece of text uses one of these sizes, so the same kind of text is the same size on every page */
+  --fs-small:.9375rem;  /* 15 px: only outside the cards: the tab bar, the footer, the small Email button, the image viewer */
+  --fs-body:1.0625rem;  /* 17 px: all text inside a card except its title, so a card never mixes small and large text */
+  --fs-lead:1.25rem;    /* 20 px: the introduction under each page title */
+  --fs-head:1.5rem;     /* 24 px: the title of each card; on the profile card, the name and the GPA figures */
   --gutter:clamp(1.25rem,5vw,3rem);
   --r:1.5rem;
   --ease:cubic-bezier(.22,1,.36,1);
@@ -49,7 +54,7 @@
 }
 *,*::before,*::after{box-sizing:border-box}
 html{background:#CBCDD0;scroll-behavior:smooth;-webkit-text-size-adjust:100%}   /* the metal's base tone, seen until the background is drawn */
-body{margin:0;min-height:100vh;color:var(--ink);font:400 1.0625rem/1.55 var(--font);letter-spacing:-.011em}   /* default font smoothing: on a Mac, text keeps its full weight */
+body{margin:0;min-height:100vh;color:var(--ink);font:400 var(--fs-body)/1.55 var(--font);letter-spacing:-.011em}   /* default font smoothing: on a Mac, text keeps its full weight */
 img{display:block;max-width:100%;height:auto}
 h1,h2,h3,p,ul,dl,dd,figure{margin:0}
 ul{padding:0;list-style:none}
@@ -86,9 +91,9 @@ mark{background:var(--mark);-webkit-background-clip:text;background-clip:text;co
 .brand i{width:.5rem;height:.5rem;border-radius:50%;background:var(--btn)}
 /* buttons: all the same clear glass at rest; a button lights up only while the pointer is on it,
    and sinks into the glass while it is pressed */
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:.72rem 1.4rem;border-radius:99rem;font-size:1.0625rem;font-weight:500;letter-spacing:-.01em;
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:.72rem 1.4rem;border-radius:99rem;font-size:var(--fs-body);font-weight:500;letter-spacing:-.01em;
   color:var(--ink);background:rgba(255,255,255,.3);box-shadow:var(--glass-shadow)}
-.btn.small{padding:.4rem 1rem;font-size:.9375rem}
+.btn.small{padding:.4rem 1rem;font-size:var(--fs-small)}
 .btn,dialog button{-webkit-tap-highlight-color:transparent;
   transition:background-color .35s var(--ease),color .25s,box-shadow .45s var(--ease),scale .5s var(--spring),translate .5s var(--spring)}
 .btn:hover,dialog button:hover{text-decoration:none;background:rgba(255,255,255,.88);box-shadow:var(--glass-lit)}
@@ -97,7 +102,7 @@ mark{background:var(--mark);-webkit-background-clip:text;background-clip:text;co
 /* the floating tab bar passes over text and photos, so unlike the cards it keeps a real blur */
 .tabs{position:fixed;z-index:30;left:50%;bottom:calc(.9rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:flex;gap:.1rem;padding:.28rem;border-radius:99rem;white-space:nowrap;
   background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(8px) saturate(150%);backdrop-filter:blur(8px) saturate(150%);box-shadow:var(--glass-shadow)}
-.tabs a{padding:.46rem .95rem;border-radius:99rem;color:var(--ink-2);font-size:.9375rem;-webkit-tap-highlight-color:transparent;
+.tabs a{padding:.46rem .95rem;border-radius:99rem;color:var(--ink-2);font-size:var(--fs-small);-webkit-tap-highlight-color:transparent;
   transition:color .25s,background-color .25s,box-shadow .25s,scale .45s var(--spring)}
 .tabs a:hover{color:var(--ink);text-decoration:none}
 .tabs a[aria-current="page"]{color:var(--ink);background:rgba(255,255,255,.85);box-shadow:inset 0 1px 0 #FFFFFF,0 1px 2px rgba(0,0,0,.1);font-weight:500}
@@ -110,39 +115,39 @@ mark{background:var(--mark);-webkit-background-clip:text;background-clip:text;co
 /* ---------- home ---------- */
 .hero{display:grid;gap:2.5rem;align-items:end;padding:clamp(2.5rem,8vw,6rem) 0 clamp(2rem,5vw,3.5rem)}
 @media (min-width:60rem){.hero{grid-template-columns:minmax(0,1.4fr) minmax(20rem,.8fr);gap:3.5rem}}
-.name{font-family:var(--display);font-weight:600;font-size:clamp(3.4rem,11vw,7rem);line-height:1;letter-spacing:-.045em}
-.title{font-family:var(--display);font-weight:600;font-size:clamp(3rem,9vw,5.5rem);line-height:1;letter-spacing:-.045em}
+.name{font-family:var(--display);font-weight:600;font-size:clamp(2.75rem,7.5vw,4.75rem);line-height:1;letter-spacing:-.045em}
+.title{font-family:var(--display);font-weight:600;font-size:clamp(2.5rem,6vw,4rem);line-height:1;letter-spacing:-.045em}
 .name .w,.title .w{display:inline-block;background:var(--name);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.14em;margin-bottom:-.14em}
-.lede{font-size:clamp(1.2rem,2.1vw,1.5rem);line-height:1.4;letter-spacing:-.018em;color:var(--ink);max-width:34em;margin-top:1.5rem}
+.lede{font-size:var(--fs-lead);line-height:1.4;letter-spacing:-.018em;color:var(--ink);max-width:34em;margin-top:1.5rem}
 .reach{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2rem}
 .profile{border-radius:var(--r);padding:1.5rem}
 .who{display:flex;align-items:center;gap:1rem;padding-bottom:1.25rem}
 .face{width:4.5rem;height:4.5rem;border-radius:1.1rem;object-fit:cover;object-position:50% 18%;flex:none}
-.who strong{display:block;font-weight:600;font-size:1.1875rem;letter-spacing:-.02em;line-height:1.2}
-.who span{display:inline-flex;align-items:center;gap:.3rem;color:var(--ink-2);font-size:.9375rem;margin-top:.2rem}
+.who strong{display:block;font-weight:600;font-size:var(--fs-head);letter-spacing:-.02em;line-height:1.2}
+.who span{display:inline-flex;align-items:center;gap:.3rem;color:var(--ink-2);font-size:var(--fs-body);margin-top:.2rem}
 .who svg{width:.95em;height:.95em;flex:none}
 .row{padding:1rem 0;border-top:1px solid var(--line)}
 .row b{display:block;font-weight:600;letter-spacing:-.015em;line-height:1.3}
-.row small{display:block;color:var(--ink-2);font-size:.9375rem;line-height:1.4;margin-top:.15rem}
+.row small{display:block;color:var(--ink-2);font-size:var(--fs-body);line-height:1.4;margin-top:.15rem}
 .gpa{display:flex;gap:1.5rem}
 .gpa div{flex:1}
-.gpa b{font-size:2.25rem;font-weight:600;letter-spacing:-.035em;line-height:1.05;font-variant-numeric:tabular-nums}
-.gpa b span{font-size:1rem;font-weight:400;letter-spacing:0;color:var(--ink-3)}
+.gpa b{font-size:var(--fs-head);font-weight:600;letter-spacing:-.035em;line-height:1.05;font-variant-numeric:tabular-nums}
+.gpa b span{font-size:var(--fs-body);font-weight:400;letter-spacing:0;color:var(--ink-3)}
 .feature{margin-top:1rem}
-.feature figcaption{display:flex;flex-wrap:wrap;align-items:baseline;gap:.35rem 1rem;margin-top:.75rem;padding:.9rem 1.15rem;border-radius:1.1rem;color:var(--ink-2);font-size:.9375rem}
+.feature figcaption{display:flex;flex-wrap:wrap;align-items:baseline;gap:.35rem 1rem;margin-top:.75rem;padding:.9rem 1.15rem;border-radius:1.1rem;color:var(--ink-2);font-size:var(--fs-body)}
 .feature figcaption strong{color:var(--ink);font-weight:600}
-.pill{display:inline-block;font-size:.875rem;font-weight:500;color:var(--ink-3);white-space:nowrap}
+.pill{display:inline-block;font-size:var(--fs-body);font-weight:500;color:var(--ink-3);white-space:nowrap}
 .pill.accent{color:var(--accent);font-weight:600;white-space:normal}
 .tiles{display:grid;gap:1rem;margin-top:1.25rem}
 @media (min-width:52rem){.tiles{grid-template-columns:repeat(3,1fr)}}
 .tile{display:flex;flex-direction:column;padding:1.75rem;border-radius:var(--r);color:var(--ink);-webkit-tap-highlight-color:transparent}
 .tile:hover{text-decoration:none;color:var(--ink)}
-.tile h2{display:flex;justify-content:space-between;align-items:center;font-size:1.75rem;font-weight:600;letter-spacing:-.03em;line-height:1.1}
+.tile h2{display:flex;justify-content:space-between;align-items:center;font-size:var(--fs-head);font-weight:600;letter-spacing:-.03em;line-height:1.1}
 .tile h2 svg{width:2rem;height:2rem;padding:.45rem;border-radius:50%;border:1px solid var(--line);transition:background .3s,color .3s,border-color .3s,transform .5s var(--ease)}
 .tile:hover h2 svg{background:var(--btn);border-color:var(--btn);color:var(--on-btn);transform:rotate(-45deg)}
 .tile ul{margin-top:1.1rem;flex:1}
-.tile li{padding:.6rem 0;border-top:1px solid var(--line);color:var(--ink-2);font-size:.9375rem;line-height:1.35}
-.tile .go{margin-top:1.25rem;color:var(--accent);font-size:.9375rem}
+.tile li{padding:.6rem 0;border-top:1px solid var(--line);color:var(--ink-2);font-size:var(--fs-body);line-height:1.35}
+.tile .go{margin-top:1.25rem;color:var(--accent);font-size:var(--fs-body)}
 .tile .go::after,.more a::after{content:" \203A"}
 
 /* ---------- inner pages ---------- */
@@ -150,11 +155,11 @@ mark{background:var(--mark);-webkit-background-clip:text;background-clip:text;co
 .stack{display:grid;gap:1rem}
 .card{padding:clamp(1.5rem,3.5vw,2.5rem);border-radius:var(--r)}
 .card header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.35rem 1rem}
-.card h2{flex:1 1 14em;font-size:clamp(1.4rem,2.4vw,1.75rem);font-weight:600;line-height:1.18;letter-spacing:-.025em}
-.meta{color:var(--ink-2);font-size:.9375rem;line-height:1.45;margin-top:.6rem}
+.card h2{flex:1 1 14em;font-size:var(--fs-head);font-weight:600;line-height:1.18;letter-spacing:-.025em}
+.meta{color:var(--ink-2);font-size:var(--fs-body);line-height:1.45;margin-top:.6rem}
 .award{margin-top:.75rem}
 .award .pill.accent::before{content:"";display:inline-block;width:.45em;height:.45em;border-radius:50%;background:currentColor;margin-right:.5em;vertical-align:.12em}
-.sum{margin-top:1rem;font-size:1.1875rem;line-height:1.45;letter-spacing:-.02em}
+.sum{margin-top:1rem}   /* a project's one-line summary reads as body text, between its title and its bullet points */
 .pts{margin-top:1rem}
 .pts li{position:relative;padding-left:1.15rem;margin-top:.6rem;color:var(--ink-2)}
 .pts li::before{content:"";position:absolute;left:0;top:.62em;width:.35rem;height:.35rem;border-radius:50%;background:var(--ink-3)}
@@ -177,30 +182,30 @@ mark{background:var(--mark);-webkit-background-clip:text;background-clip:text;co
 .figs.c2 .zoom img,.figs.c3 .zoom img{aspect-ratio:3/4;object-fit:cover}
 .figs.land .zoom img{aspect-ratio:4/3}
 .figs.tall .zoom img{aspect-ratio:460/1000}
-.cap{color:var(--ink-3);font-size:.875rem;line-height:1.45;margin-top:.7rem}
+.cap{color:var(--ink-3);font-size:var(--fs-body);line-height:1.45;margin-top:.7rem}
 
 /* about */
 .about{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem}   /* minmax(0,1fr): nothing inside a card can make the page wider than the screen */
 @media (min-width:60rem){.about{grid-template-columns:1fr 1fr;align-items:start}.about .wide{grid-column:1/-1}}
-.card h2.h{flex:none;font-size:1.75rem;letter-spacing:-.03em;margin-bottom:.75rem}
+.card h2.h{flex:none;font-size:var(--fs-head);letter-spacing:-.03em;margin-bottom:.75rem}
 .honors li{display:grid;grid-template-columns:3.5rem 1fr;gap:.15rem 1rem;padding:1rem 0;border-top:1px solid var(--line)}
 .honors li:last-child,.skills div:last-child,.lead li:last-child{padding-bottom:0}
 .honors .pill{padding-top:.1rem}
 .honors b{font-weight:600;line-height:1.35;letter-spacing:-.015em}
-.honors small{display:block;color:var(--ink-2);font-size:.9375rem;line-height:1.4;margin-top:.15rem}
+.honors small{display:block;color:var(--ink-2);font-size:var(--fs-body);line-height:1.4;margin-top:.15rem}
 .skills div{display:grid;gap:.3rem;padding:1rem 0;border-top:1px solid var(--line)}
 @media (min-width:48rem){.skills div{grid-template-columns:17rem 1fr;gap:1.5rem}}
 .skills dt{font-weight:600;letter-spacing:-.015em}
-.skills dd .pill{display:inline;font-size:1rem;font-weight:400;color:var(--ink-2);white-space:normal}
+.skills dd .pill{display:inline;font-size:var(--fs-body);font-weight:400;color:var(--ink-2);white-space:normal}
 .skills dd .pill + .pill::before{content:"\00B7\200B";margin:0 .55em;color:var(--ink-3)}   /* the zero-width space after each dot lets a long list wrap on a phone */
 .lead li{padding:1rem 0;border-top:1px solid var(--line)}
 .lead header{align-items:baseline}
-.lead h3{flex:1 1 12em;font-size:1.125rem;font-weight:600;letter-spacing:-.02em;line-height:1.3}
+.lead h3{flex:1 1 12em;font-size:var(--fs-body);font-weight:600;letter-spacing:-.02em;line-height:1.3}
 .lead p{color:var(--ink-2);margin-top:.45rem}
 
 /* ---------- footer ---------- */
 .foot{margin-top:clamp(3rem,7vw,5rem);padding:0 var(--gutter) calc(5.5rem + env(safe-area-inset-bottom,0px))}
-.foot .glass{max-width:calc(68rem - 2 * var(--gutter));margin:0 auto;padding:1.1rem 1.4rem;border-radius:var(--r);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.6rem 2rem;font-size:.875rem}
+.foot .glass{max-width:calc(68rem - 2 * var(--gutter));margin:0 auto;padding:1.1rem 1.4rem;border-radius:var(--r);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.6rem 2rem;font-size:var(--fs-small)}
 .foot .links{display:flex;flex-wrap:wrap;gap:.3rem 1.5rem}
 .foot .links a{color:var(--ink-2)}
 .foot .links a:hover{color:var(--ink)}
@@ -213,8 +218,8 @@ dialog::backdrop{background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(2
 dialog[open]{animation:pop .45s var(--ease)}
 dialog img{max-width:100%;max-height:82vh;margin:0 auto;border-radius:1rem}
 dialog form{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-top:.75rem}
-dialog p{font-size:.9375rem;color:var(--ink-2)}
-dialog button{font:500 1rem var(--font);color:var(--ink);background:rgba(255,255,255,.3);border:0;padding:.55rem 1.2rem;border-radius:99rem;cursor:pointer;box-shadow:var(--glass-shadow)}
+dialog p{font-size:var(--fs-small);color:var(--ink-2)}
+dialog button{font:500 var(--fs-small) var(--font);color:var(--ink);background:rgba(255,255,255,.3);border:0;padding:.55rem 1.2rem;border-radius:99rem;cursor:pointer;box-shadow:var(--glass-shadow)}
 
 /* ---------- motion ---------- */
 @keyframes soft{from{opacity:0;transform:translateY(.3em);filter:blur(12px)}to{opacity:1;transform:none;filter:blur(0)}}
