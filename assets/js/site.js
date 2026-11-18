@@ -7,6 +7,7 @@
   if (!viewer || typeof viewer.showModal !== 'function') return;
   var big = viewer.querySelector('img');
   var note = viewer.querySelector('p');
+  viewer.tabIndex = -1;   // the viewer itself takes focus when it opens
   document.querySelectorAll('.zoom').forEach(function (b) {
     b.addEventListener('click', function () {
       var img = b.querySelector('img');
@@ -14,6 +15,7 @@
       big.alt = img.alt;
       note.textContent = img.alt;
       viewer.showModal();
+      viewer.focus();   // a tap no longer leaves a focus ring on Close; Tab still reaches it
     });
   });
   viewer.addEventListener('click', function (e) {

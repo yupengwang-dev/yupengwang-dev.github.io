@@ -213,10 +213,12 @@ mark{background:var(--mark);-webkit-background-clip:text;background-clip:text;co
 @media (min-width:48rem){.foot{padding-bottom:2.5rem}}
 
 /* ---------- enlarged image ---------- */
-dialog{border:0;padding:0;background:transparent;color:var(--ink);max-width:min(94vw,68rem);max-height:94vh}
+dialog{border:0;padding:1rem 1rem 1.5rem;background:transparent;color:var(--ink);max-width:min(100%,70rem);max-height:100%}   /* clear padding: room for the Close button's shadow and focus ring, which the viewer's edge would otherwise cut off */
+@media (min-width:48rem){dialog{padding:1.75rem;max-width:min(100%,71.5rem)}}   /* and for the glow under the pointer */
+dialog:focus,dialog:focus-visible{outline:none}
 dialog::backdrop{background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
 dialog[open]{animation:pop .45s var(--ease)}
-dialog img{max-width:100%;max-height:82vh;margin:0 auto;border-radius:1rem}
+dialog img{max-width:100%;max-height:82vh;max-height:min(82dvh,100dvh - 9rem);margin:0 auto;border-radius:1rem}   /* leaves room for the caption and Close, also on a phone turned sideways */
 dialog form{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-top:.75rem}
 dialog p{font-size:var(--fs-small);color:var(--ink-2)}
 dialog button{font:500 var(--fs-small) var(--font);color:var(--ink);background:rgba(255,255,255,.3);border:0;padding:.55rem 1.2rem;border-radius:99rem;cursor:pointer;box-shadow:var(--glass-shadow)}
